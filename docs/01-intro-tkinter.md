@@ -3,13 +3,7 @@ Tkinter es la biblioteca de interfaces gráficas de usuario (GUI) estándar para
 
 1. [Instalación](#instalación)
 2. [Tu Primera Ventana en Python](#tu-primera-ventana-en-python)
-3. [Guía para Principiantes: Organizando tu Ventana (Layouts)](#guía-para-principiantes-organizando-tu-ventana-layouts)
-4. [Dándole Vida a tu Ventana (Widgets)](#dándole-vida-a-tu-ventana-widgets)
-5. [Conectando la Lógica y la Pantalla (Variables de Control)](#conectando-la-lógica-y-la-pantalla-variables-de-control)
-6. [Dando Opciones al Usuario (Selección y Estado)](#dando-opciones-al-usuario-selección-y-estado)
-7. [Escuchando al Usuario (Eventos)](#escuchando-al-usuario-eventos)
-8. [Organizando el Caos (Frames y Ventanas)](#organizando-el-caos-frames-y-ventanas)
-9. [Toques Finales, Alertas y Estética](#toques-finales-alertas-y-estética)
+
 
 ---
 ## Instalación
@@ -148,130 +142,7 @@ ventana.mainloop()
 Acabas de crear tu primera ventana en Python. En el siguiente módulo, aprenderemos cómo organizar elementos (botones y textos) dentro de esta ventana para que tenga utilidad real.
 
 ---
-## Guía para Principiantes: Organizando tu Ventana (Layouts)
-
-En el módulo anterior compramos nuestro "terreno vacío" (la ventana principal). Ahora es el momento de construir y acomodar los muebles (los botones, textos y cuadros de entrada).
-
-Acomodar elementos en Tkinter se llama Gestión de Diseño (Layout Management). Tkinter nos ofrece tres formas diferentes de organizar nuestros elementos: `pack()`, `grid()` y `place()`.
-
-¡Vamos a conocer a los tres organizadores!
-
-🛑 REGLA DE ORO ANTES DE EMPEZAR
-
-Nunca, jamás, mezcles `pack()` y `grid()` en la misma ventana o contenedor. Si lo haces, Tkinter se confundirá tanto tratando de calcular los espacios que tu programa se quedará congelado o se cerrará. ¡Elige solo a un organizador para cada área!
-
-### 1. El método `pack()`: El apilador automático 📚
-
-Imagina que estás guardando libros en una caja. Simplemente los pones uno encima del otro. Así funciona `pack()` (que significa "empacar").
-
-Por defecto, si usas `pack()`, Tkinter pondrá el primer elemento arriba, el siguiente justo debajo, y así sucesivamente, centrándolos en la ventana.
-
-*Personalizando `pack()`:*
-
-- **`side` (Lado):** ¿Hacia dónde quieres empujar el elemento? Puedes usar `tk.TOP` (arriba, por defecto), t`k.BOTTOM` (abajo), `tk.LEFT` (izquierda) o `tk.RIGHT` (derecha).
-
-- **`padx` y `pady` (Espacio exterior):** Es como darle "espacio personal" a tu elemento para que no se pegue con los demás. `padx` da espacio a los lados, `pady` da espacio arriba y abajo.
-
-- **`fill` (Rellenar):** Si quieres que tu botón se estire como una liga de goma para ocupar todo el espacio horizontal, usas f`ill=tk.X`.
-
-*Ejemplo de uso:*
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-ventana.geometry("300x200")
-
-# Creamos dos botones (¡Aún no aparecerán hasta usar pack!)
-boton1 = tk.Button(ventana, text="Botón Arriba")
-boton2 = tk.Button(ventana, text="Botón Abajo")
-
-# Los organizamos
-boton1.pack(side=tk.TOP, pady=10) # Se pone arriba, con 10 píxeles de separación vertical
-boton2.pack(side=tk.BOTTOM, pady=10) # Se pone hasta abajo
-
-ventana.mainloop()
-```
-
-
-### 2. El método `grid()`: La hoja de cálculo (El favorito) 🏁
-
-Este es el estándar de la industria y el que más vas a usar. Imagina que tu ventana es una hoja de Excel o un tablero de ajedrez gigante. Está dividida en filas (`rows`) y columnas (`columns`).
-
-La primera fila es la `0` y la primera columna es la `0`.
-
-*Personalizando `grid()`:*
-
-- **`row` y `column`:** Le dices exactamente en qué casilla del tablero quieres poner tu elemento.
-
-- **`columnspan` y `rowspan` (Combinar celdas):** Al igual que en Excel, a veces quieres que un título o una caja de texto ocupe dos o tres columnas de ancho. Si le pones `columnspan=2`, ocupará dos casillas.
-
-- **`sticky` (Pegajoso):** Si la casilla del tablero es muy grande pero tu botón es pequeño, se quedará en el centro. Con `sticky` lo "pegas" a los bordes usando puntos cardinales: `N` (Norte/Arriba), `S` (Sur/Abajo), `E` (Este/Derecha), `W` (Oeste/Izquierda). Para que se estire a todos lados, usas `sticky="nsew"`.
-
-*Ejemplo de uso:*
-
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-
-# Creamos etiquetas (textos)
-texto_usuario = tk.Label(ventana, text="Usuario:")
-texto_clave = tk.Label(ventana, text="Contraseña:")
-
-# Usamos grid como un formulario
-texto_usuario.grid(row=0, column=0, padx=10, pady=5) # Fila 0, Columna 0
-texto_clave.grid(row=1, column=0, padx=10, pady=5)   # Fila 1, Columna 0
-
-# (Aquí podríamos poner las cajas para escribir en la columna 1)
-
-ventana.mainloop()
-```
-
-
-💡 Nota: grid es perfecto para formularios y calculadoras.
-
-### 3. El método `place()`: El francotirador 🎯
-
-A diferencia de `pack` o `grid` que acomodan las cosas automáticamente, con `place()` tú eres el jefe absoluto. Le dices a Tkinter las coordenadas exactas en píxeles donde quieres que vaya el elemento.
-
-La esquina superior izquierda de tu ventana es la coordenada `x=0`, `y=0`.
-
-*Personalizando `place()`:*
-
-- **x:** Píxeles de distancia desde el borde izquierdo.
-
-- **y:** Píxeles de distancia desde el techo.
-
-*Ejemplo de uso:*
-
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-ventana.geometry("300x300")
-
-boton_secreto = tk.Button(ventana, text="Botón Escondido")
-# Lo ponemos exactamente a 150 px de la izquierda y 50 px de arriba
-boton_secreto.place(x=150, y=50) 
-
-ventana.mainloop()
-```
-
-
-⚠️ Peligro para principiantes: Rara vez usamos `place()`. ¿Por qué? Porque si el usuario hace la ventana más grande o la abre en una pantalla diferente, tus botones se quedarán estancados en esos píxeles exactos y todo se verá descuadrado.
-
-🏆 Resumen: ¿Cuál elegir?
-
-- Usa `pack()` cuando tu ventana sea muy sencilla y solo quieras apilar cosas una sobre otra o ponerlas en fila.
-
-- Usa `grid()` el 90% de las veces. Es el mejor para crear formularios, aplicaciones reales y diseños estructurados.
-
-- Usa `place()` casi nunca, solo cuando estés haciendo algo muy específico como un juego o un diseño donde necesites precisión milimétrica.
-
-¡En la siguiente empezaremos a crear y usar estos elementos interactivos como Botones, Textos e Imágenes para darles vida con estos gestores de diseño!
-
----
-## Dándole Vida a tu Ventana (Widgets)`
+## Elementos de la GUI (Widgets)
 Ahora es el momento de comprar esos muebles. En el mundo de Tkinter, a estos elementos interactivos (botones, textos, imágenes) se les llama Widgets.
 
 Vamos a conocer los 5 widgets más importantes que usarás en casi todos tus programas.
@@ -289,11 +160,20 @@ import tkinter as tk
 
 ventana = tk.Tk()
 
-# Creamos la etiqueta y le damos estilo (fuente Arial, tamaño 14)
-mi_texto = tk.Label(ventana, text="¡Hola! Soy un letrero", font=("Arial", 14))
+# Crear un Label para texto o imágenes
+texto = tk.Label(
+    ventana,
+    text="¡Hola! Soy un letrero",
+    font=("Arial", 14),
+    bg="green",
+    fg="white",
+    padx=20,
+    pady=20,
+    border=2,
+    relief="raised", # Valoere = flat, groove, raised, ridge, solid, sunken, or ridge
+)
 
-# La colocamos en la ventana usando pack()
-mi_texto.pack(pady=20)
+texto.pack()
 
 ventana.mainloop()
 ```
@@ -309,15 +189,26 @@ Un `Button` es exactamente lo que imaginas: un botón que el usuario puede presi
 ```python
 import tkinter as tk
 
-def saludar():
-    # Esto se mostrará en la consola (pantalla negra) al hacer clic
-    print("¡El botón funciona, me has presionado!")
-
 ventana = tk.Tk()
 
-# Creamos el botón. command=saludar es lo que conecta el clic con la función
-boton_saludo = tk.Button(ventana, text="Presióname", command=saludar)
-boton_saludo.pack(pady=20)
+# Función que se ejecuta cuando se hace clic en el botón
+def saludar():
+    print("Hola")
+
+boton = tk.Button(
+    ventana,
+    text="Saludar",
+    font=("Arial", 12),
+    bg="blue",
+    fg="white",
+    padx=20,
+    pady=10,
+    cursor="hand1", # Valores = hand1, hand2, arrow, crosshair, etc
+    activebackground="green",
+    activeforeground="blue",
+    command=saludar, # Se ejecuta cuando se hace clic en el botón
+)
+boton.pack(pady=10)
 
 ventana.mainloop()
 ```
@@ -335,21 +226,37 @@ El `Entry` (entrada) es una caja rectangular donde el usuario puede escribir tex
 ```python
 import tkinter as tk
 
-def leer_nombre():
-    # .get() sirve para "extraer" lo que el usuario escribió
-    nombre_escrito = caja_nombre.get()
-    print("El usuario se llama: " + nombre_escrito)
+# Entry para ingresar un nombre
+nombre_entry = tk.Entry(
+    ventana,
+    font=("Arial", 12),
+    justify="center",
+    highlightbackground="blue",
+    highlightcolor="blue",
+    highlightthickness=2,
+    fg="blue",
+    
+)
+nombre_entry.pack(pady=20, padx=20)
 
-ventana = tk.Tk()
+def saludar():
+    nombre = nombre_entry.get()    
+    tk.Label(ventana, text=f"Hola {nombre}", font=("Arial", 14)).pack()
 
-tk.Label(ventana, text="Escribe tu nombre:").pack()
-
-# Creamos la caja de texto
-caja_nombre = tk.Entry(ventana)
-caja_nombre.pack(pady=5)
-
-# Un botón para enviar la información
-tk.Button(ventana, text="Enviar", command=leer_nombre).pack()
+boton = tk.Button(
+    ventana,
+    text="Saludar",
+    font=("Arial", 12),
+    bg="blue",
+    fg="white",
+    padx=20,
+    pady=10,
+    cursor="hand1",
+    activebackground="green",
+    activeforeground="blue",
+    command=saludar,
+)
+boton.pack(pady=10)
 
 ventana.mainloop()
 ```
@@ -376,43 +283,15 @@ area_texto.pack(pady=10)
 ventana.mainloop()
 ```
 
-
-### 5. El Widget Canvas: Tu lienzo de dibujo 🎨
-
-El `Canvas` (lienzo) es diferente al resto. Es un espacio en blanco donde puedes dibujar cosas usando coordenadas matemáticas: líneas, rectángulos, círculos o incluso poner imágenes.
-
-- **Explicación simple:** Literalmente como el lienzo de un pintor. Le dices al programa "Dibuja un círculo azul en esta posición exacta".
-
-Aplicación real: Se usa para crear gráficos estadísticos simples, pequeños juegos (como el Snake) o figuras personalizadas.
-
-*Ejemplo de uso:*
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-
-# Creamos el lienzo de 200x200 píxeles, con fondo blanco
-lienzo = tk.Canvas(ventana, width=200, height=200, bg="white")
-lienzo.pack()
-
-# Dibujamos un rectángulo azul
-# Coordenadas: (x1, y1) esquina superior izquierda, (x2, y2) esquina inferior derecha
-lienzo.create_rectangle(50, 50, 150, 150, fill="blue")
-
-ventana.mainloop()
-```
-
-
 *🏆 Resumen del Módulo*
 
 - `Label`: Para mostrar texto o instrucciones (letreros).
 - `Button`: Para que el usuario ejecute acciones (clics).
 - `Entry`: Para que el usuario escriba un dato corto (una línea).
 - `Text`: Para que el usuario escriba textos largos (párrafos).
-- `Canvas`: Para dibujar figuras geométricas o gráficos.
 
 ---
-## Conectando la Lógica y la Pantalla (Variables de Control)
+## Variables de Control
 Hasta ahora, hemos creado ventanas, organizado elementos y puesto botones y cajas de texto. Pero hay un pequeño problema: ¿cómo hacemos que nuestra interfaz se comunique fluídamente con el código detrás de ella?
 
 Aquí es donde entran las Variables de Control.
@@ -533,177 +412,6 @@ ventana.mainloop()
 - Para cambiar el valor guardado usa .set("nuevo valor"). Para leerlo, usa .get().
 - Usa el parámetro textvariable en Labels o Entries para conectarlos a tu variable.
 - El método .trace("w", funcion) es tu mejor amigo para reaccionar al instante cada vez que el usuario teclea algo.
-
----
-## Dando Opciones al Usuario (Selección y Estado)
-Hasta ahora tu usuario puede leer textos, hacer clics en botones y escribir en cajas. Pero, ¿qué pasa cuando quieres que el usuario elija entre opciones predefinidas?
-
-Imagina que estás creando una aplicación para pedir pizzas. No quieres que el usuario escriba "tamaño grande", porque podría escribir "gande" con un error y tu programa se confundiría. Es mejor darle opciones exactas para que solo tenga que hacer clic.
-
-Vamos a conocer los 5 elementos de selección más importantes en Tkinter.
-
-### 1. El `Checkbutton`: Los ingredientes extra (Selección Múltiple) 🍕
-
-Un `Checkbutton` es una pequeña casilla cuadrada. El usuario puede marcarla (ponerle una palomita/check) o desmarcarla.
-
-- **Regla de oro:** Se usan cuando puedes elegir varias cosas al mismo tiempo (o ninguna).
-- **Analogía:** Los ingredientes extra de una pizza. Puedes pedir extra queso, pepperoni y champiñones al mismo tiempo; o puedes no pedir ninguno.
-- **El secreto:** Trabajan de la mano con una BooleanVar (Verdadero = Marcado, Falso = Desmarcado).
-
-*Ejemplo de uso:*
-
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-ventana.geometry("300x150")
-
-# La variable que recordará si la casilla está marcada o no
-var_queso = tk.BooleanVar()
-
-# Creamos la casilla y la conectamos a la variable
-casilla = tk.Checkbutton(ventana, text="Extra Queso", variable=var_queso)
-casilla.pack(pady=20)
-
-def ver_orden():
-    if var_queso.get() == True:
-        print("¡El cliente quiere extra queso!")
-    else:
-        print("Pizza normal sin extra queso.")
-
-tk.Button(ventana, text="Confirmar", command=ver_orden).pack()
-
-ventana.mainloop()
-```
-
-### 2. El `Radiobutton`: El tamaño de la pizza (Selección Única) 🎯
-
-A diferencia del Checkbutton, los `Radiobutton` son circulitos y son exclusivos. Si seleccionas uno, los demás se deseleccionan automáticamente.
-
-- **Regla de oro:** Se usan cuando el usuario solo puede elegir UNA opción de un grupo.
-- **Analogía:** El tamaño de la pizza. No puedes pedir una pizza que sea "Pequeña" y "Grande" al mismo tiempo en la misma masa. O es una, o es la otra.
-- **El secreto:** Varios Radiobuttons deben compartir la misma variable (por ejemplo, una `StringVar`).
-
-Ejemplo de uso:
-
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-ventana.geometry("300x200")
-
-tk.Label(ventana, text="Elige el tamaño:").pack()
-
-# Una sola variable para todo el grupo
-var_tamano = tk.StringVar()
-var_tamano.set("Mediana") # Valor por defecto
-
-# Todos los botones usan la misma 'variable', pero cada uno tiene un 'value' diferente
-tk.Radiobutton(ventana, text="Pequeña", variable=var_tamano, value="Pequeña").pack()
-tk.Radiobutton(ventana, text="Mediana", variable=var_tamano, value="Mediana").pack()
-tk.Radiobutton(ventana, text="Grande", variable=var_tamano, value="Grande").pack()
-
-def mostrar_tamano():
-    print("Preparando una pizza tamaño:", var_tamano.get())
-
-tk.Button(ventana, text="Pedir", command=mostrar_tamano).pack(pady=10)
-
-ventana.mainloop()
-```
-
-### 3. El `Combobox`: La lista desplegable (Para ahorrar espacio) 🔽
-
-Si tienes 3 opciones, los Radiobuttons son geniales. Pero, ¿qué pasa si tienes que elegir tu país de nacimiento de una lista de 195 países? Llenar la pantalla con 195 circulitos sería un desastre.
-
-Para eso usamos el `Combobox`. Es una caja que, al hacer clic, despliega una lista hacia abajo.
-Ojo: Este elemento no viene en el Tkinter básico, viene en un sub-módulo más moderno llamado `ttk`.
-
-*Ejemplo de uso:*
-```python
-import tkinter as tk
-from tkinter import ttk # Importamos el módulo moderno
-
-ventana = tk.Tk()
-
-tk.Label(ventana, text="Método de pago:").pack(pady=10)
-
-# Creamos la caja desplegable
-caja_opciones = ttk.Combobox(ventana, values=["Efectivo", "Tarjeta de Crédito", "PayPal"])
-caja_opciones.pack()
-
-# Para que el usuario no escriba cosas inventadas y solo elija de la lista
-caja_opciones.state(["readonly"])
-
-ventana.mainloop()
-```
-
-
-### 4. El `Listbox`: La lista a la vista 📋
-
-Es parecido al Combobox, pero la lista siempre está visible en la pantalla como un pequeño recuadro. El usuario puede hacer clic en un elemento para sombrearlo y seleccionarlo.
-
-- **Analogía:** Una lista del supermercado donde subrayas lo que necesitas.
-
-*Ejemplo de uso:*
-
-```python
-import tkinter as tk
-
-ventana = tk.Tk()
-
-tk.Label(ventana, text="Frutas disponibles:").pack()
-
-# Creamos la lista visual
-lista = tk.Listbox(ventana)
-lista.pack(pady=10)
-
-# Le agregamos elementos usando .insert()
-# El END significa "ponlo al final de lo que ya haya"
-lista.insert(tk.END, "Manzana")
-lista.insert(tk.END, "Banana")
-lista.insert(tk.END, "Fresa")
-lista.insert(tk.END, "Naranja")
-
-ventana.mainloop()
-```
-
-
-### 5. El `Scale`: El deslizador numérico 🎚️
-A veces no queremos que el usuario elija de una lista, sino que escoja un número dentro de un rango deslizando un control.
-- Analogía: El control de volumen del estéreo o el brillo de tu pantalla.
-- El secreto: Le decimos desde dónde empieza (from_) y dónde termina (to). (Nota que 'from' lleva un guión bajo al final en Python).
-
-*Ejemplo de uso:*
-
-```py
-import tkinter as tk
-
-ventana = tk.Tk()
-ventana.geometry("300x150")
-
-tk.Label(ventana, text="Volumen:").pack()
-
-# Creamos el deslizador. Orient=HORIZONTAL lo acuesta (por defecto es vertical)
-deslizador = tk.Scale(ventana, from_=0, to=100, orient=tk.HORIZONTAL)
-deslizador.pack(pady=10)
-
-def checar_volumen():
-    # .get() nos devuelve el número en el que se quedó el deslizador
-    print("El volumen está en:", deslizador.get())
-
-tk.Button(ventana, text="Ver Volumen", command=checar_volumen).pack()
-
-ventana.mainloop()
-```
-
-
-*🏆 Resumen del Módulo*
-
-- Checkbutton (Casilla): Para opciones de Sí o No, donde puedes seleccionar varias a la vez. Usa BooleanVar().
-- Radiobutton (Circulito): Para opciones únicas y exclusivas. Todos deben compartir la misma variable.
-- Combobox (Desplegable): Para listas largas que no caben en la pantalla. (Recuerda importar ttk).
-- Listbox (Lista visible): Para listas de tamaño mediano que quieres que siempre estén a la vista.
-- Scale (Deslizador): Para elegir un número rápidamente arrastrando una barrita.
 
 ---
 ## Escuchando al Usuario (Eventos)
@@ -1095,3 +803,297 @@ ventana.mainloop()
 *💡 Consejo Pro: A partir de ahora, acostúmbrate a importar siempre ttk y usar sus widgets para que tus aplicaciones se vean profesionales.*
 
 🎉 ¡Felicidades! Has completado el temario
+
+---
+## Organizando tu Ventana (Layouts)
+
+En el módulo anterior compramos nuestro "terreno vacío" (la ventana principal). Ahora es el momento de construir y acomodar los muebles (los botones, textos y cuadros de entrada).
+
+Acomodar elementos en Tkinter se llama Gestión de Diseño (Layout Management). Tkinter nos ofrece tres formas diferentes de organizar nuestros elementos: `pack()`, `grid()` y `place()`.
+
+¡Vamos a conocer a los tres organizadores!
+
+🛑 REGLA DE ORO ANTES DE EMPEZAR
+
+Nunca, jamás, mezcles `pack()` y `grid()` en la misma ventana o contenedor. Si lo haces, Tkinter se confundirá tanto tratando de calcular los espacios que tu programa se quedará congelado o se cerrará. ¡Elige solo a un organizador para cada área!
+
+### 1. El método `pack()`: El apilador automático 📚
+
+Imagina que estás guardando libros en una caja. Simplemente los pones uno encima del otro. Así funciona `pack()` (que significa "empacar").
+
+Por defecto, si usas `pack()`, Tkinter pondrá el primer elemento arriba, el siguiente justo debajo, y así sucesivamente, centrándolos en la ventana.
+
+*Personalizando `pack()`:*
+
+- **`side` (Lado):** ¿Hacia dónde quieres empujar el elemento? Puedes usar `tk.TOP` (arriba, por defecto), t`k.BOTTOM` (abajo), `tk.LEFT` (izquierda) o `tk.RIGHT` (derecha).
+
+- **`padx` y `pady` (Espacio exterior):** Es como darle "espacio personal" a tu elemento para que no se pegue con los demás. `padx` da espacio a los lados, `pady` da espacio arriba y abajo.
+
+- **`fill` (Rellenar):** Si quieres que tu botón se estire como una liga de goma para ocupar todo el espacio horizontal, usas f`ill=tk.X`.
+
+*Ejemplo de uso:*
+```python
+import tkinter as tk
+
+ventana = tk.Tk()
+ventana.geometry("300x200")
+
+# Creamos dos botones (¡Aún no aparecerán hasta usar pack!)
+boton1 = tk.Button(ventana, text="Botón Arriba")
+boton2 = tk.Button(ventana, text="Botón Abajo")
+
+# Los organizamos
+boton1.pack(side=tk.TOP, pady=10) # Se pone arriba, con 10 píxeles de separación vertical
+boton2.pack(side=tk.BOTTOM, pady=10) # Se pone hasta abajo
+
+ventana.mainloop()
+```
+
+
+### 2. El método `grid()`: La hoja de cálculo (El favorito) 🏁
+
+Este es el estándar de la industria y el que más vas a usar. Imagina que tu ventana es una hoja de Excel o un tablero de ajedrez gigante. Está dividida en filas (`rows`) y columnas (`columns`).
+
+La primera fila es la `0` y la primera columna es la `0`.
+
+*Personalizando `grid()`:*
+
+- **`row` y `column`:** Le dices exactamente en qué casilla del tablero quieres poner tu elemento.
+
+- **`columnspan` y `rowspan` (Combinar celdas):** Al igual que en Excel, a veces quieres que un título o una caja de texto ocupe dos o tres columnas de ancho. Si le pones `columnspan=2`, ocupará dos casillas.
+
+- **`sticky` (Pegajoso):** Si la casilla del tablero es muy grande pero tu botón es pequeño, se quedará en el centro. Con `sticky` lo "pegas" a los bordes usando puntos cardinales: `N` (Norte/Arriba), `S` (Sur/Abajo), `E` (Este/Derecha), `W` (Oeste/Izquierda). Para que se estire a todos lados, usas `sticky="nsew"`.
+
+*Ejemplo de uso:*
+
+```python
+import tkinter as tk
+
+ventana = tk.Tk()
+
+# Creamos etiquetas (textos)
+texto_usuario = tk.Label(ventana, text="Usuario:")
+texto_clave = tk.Label(ventana, text="Contraseña:")
+
+# Usamos grid como un formulario
+texto_usuario.grid(row=0, column=0, padx=10, pady=5) # Fila 0, Columna 0
+texto_clave.grid(row=1, column=0, padx=10, pady=5)   # Fila 1, Columna 0
+
+# (Aquí podríamos poner las cajas para escribir en la columna 1)
+
+ventana.mainloop()
+```
+
+
+💡 Nota: grid es perfecto para formularios y calculadoras.
+
+### 3. El método `place()`: El francotirador 🎯
+
+A diferencia de `pack` o `grid` que acomodan las cosas automáticamente, con `place()` tú eres el jefe absoluto. Le dices a Tkinter las coordenadas exactas en píxeles donde quieres que vaya el elemento.
+
+La esquina superior izquierda de tu ventana es la coordenada `x=0`, `y=0`.
+
+*Personalizando `place()`:*
+
+- **x:** Píxeles de distancia desde el borde izquierdo.
+
+- **y:** Píxeles de distancia desde el techo.
+
+*Ejemplo de uso:*
+
+```python
+import tkinter as tk
+
+ventana = tk.Tk()
+ventana.geometry("300x300")
+
+boton_secreto = tk.Button(ventana, text="Botón Escondido")
+# Lo ponemos exactamente a 150 px de la izquierda y 50 px de arriba
+boton_secreto.place(x=150, y=50) 
+
+ventana.mainloop()
+```
+
+
+⚠️ Peligro para principiantes: Rara vez usamos `place()`. ¿Por qué? Porque si el usuario hace la ventana más grande o la abre en una pantalla diferente, tus botones se quedarán estancados en esos píxeles exactos y todo se verá descuadrado.
+
+🏆 Resumen: ¿Cuál elegir?
+
+- Usa `pack()` cuando tu ventana sea muy sencilla y solo quieras apilar cosas una sobre otra o ponerlas en fila.
+
+- Usa `grid()` el 90% de las veces. Es el mejor para crear formularios, aplicaciones reales y diseños estructurados.
+
+- Usa `place()` casi nunca, solo cuando estés haciendo algo muy específico como un juego o un diseño donde necesites precisión milimétrica.
+
+¡En la siguiente empezaremos a crear y usar estos elementos interactivos como Botones, Textos e Imágenes para darles vida con estos gestores de diseño!
+
+---
+## Dando Opciones al Usuario (Selección y Estado)
+Hasta ahora tu usuario puede leer textos, hacer clics en botones y escribir en cajas. Pero, ¿qué pasa cuando quieres que el usuario elija entre opciones predefinidas?
+
+Imagina que estás creando una aplicación para pedir pizzas. No quieres que el usuario escriba "tamaño grande", porque podría escribir "gande" con un error y tu programa se confundiría. Es mejor darle opciones exactas para que solo tenga que hacer clic.
+
+Vamos a conocer los 5 elementos de selección más importantes en Tkinter.
+
+### 1. El `Checkbutton`: Los ingredientes extra (Selección Múltiple) 🍕
+
+Un `Checkbutton` es una pequeña casilla cuadrada. El usuario puede marcarla (ponerle una palomita/check) o desmarcarla.
+
+- **Regla de oro:** Se usan cuando puedes elegir varias cosas al mismo tiempo (o ninguna).
+- **Analogía:** Los ingredientes extra de una pizza. Puedes pedir extra queso, pepperoni y champiñones al mismo tiempo; o puedes no pedir ninguno.
+- **El secreto:** Trabajan de la mano con una BooleanVar (Verdadero = Marcado, Falso = Desmarcado).
+
+*Ejemplo de uso:*
+
+```python
+import tkinter as tk
+
+ventana = tk.Tk()
+ventana.geometry("300x150")
+
+# La variable que recordará si la casilla está marcada o no
+var_queso = tk.BooleanVar()
+
+# Creamos la casilla y la conectamos a la variable
+casilla = tk.Checkbutton(ventana, text="Extra Queso", variable=var_queso)
+casilla.pack(pady=20)
+
+def ver_orden():
+    if var_queso.get() == True:
+        print("¡El cliente quiere extra queso!")
+    else:
+        print("Pizza normal sin extra queso.")
+
+tk.Button(ventana, text="Confirmar", command=ver_orden).pack()
+
+ventana.mainloop()
+```
+
+### 2. El `Radiobutton`: El tamaño de la pizza (Selección Única) 🎯
+
+A diferencia del Checkbutton, los `Radiobutton` son circulitos y son exclusivos. Si seleccionas uno, los demás se deseleccionan automáticamente.
+
+- **Regla de oro:** Se usan cuando el usuario solo puede elegir UNA opción de un grupo.
+- **Analogía:** El tamaño de la pizza. No puedes pedir una pizza que sea "Pequeña" y "Grande" al mismo tiempo en la misma masa. O es una, o es la otra.
+- **El secreto:** Varios Radiobuttons deben compartir la misma variable (por ejemplo, una `StringVar`).
+
+Ejemplo de uso:
+
+```python
+import tkinter as tk
+
+ventana = tk.Tk()
+ventana.geometry("300x200")
+
+tk.Label(ventana, text="Elige el tamaño:").pack()
+
+# Una sola variable para todo el grupo
+var_tamano = tk.StringVar()
+var_tamano.set("Mediana") # Valor por defecto
+
+# Todos los botones usan la misma 'variable', pero cada uno tiene un 'value' diferente
+tk.Radiobutton(ventana, text="Pequeña", variable=var_tamano, value="Pequeña").pack()
+tk.Radiobutton(ventana, text="Mediana", variable=var_tamano, value="Mediana").pack()
+tk.Radiobutton(ventana, text="Grande", variable=var_tamano, value="Grande").pack()
+
+def mostrar_tamano():
+    print("Preparando una pizza tamaño:", var_tamano.get())
+
+tk.Button(ventana, text="Pedir", command=mostrar_tamano).pack(pady=10)
+
+ventana.mainloop()
+```
+
+### 3. El `Combobox`: La lista desplegable (Para ahorrar espacio) 🔽
+
+Si tienes 3 opciones, los Radiobuttons son geniales. Pero, ¿qué pasa si tienes que elegir tu país de nacimiento de una lista de 195 países? Llenar la pantalla con 195 circulitos sería un desastre.
+
+Para eso usamos el `Combobox`. Es una caja que, al hacer clic, despliega una lista hacia abajo.
+Ojo: Este elemento no viene en el Tkinter básico, viene en un sub-módulo más moderno llamado `ttk`.
+
+*Ejemplo de uso:*
+```python
+import tkinter as tk
+from tkinter import ttk # Importamos el módulo moderno
+
+ventana = tk.Tk()
+
+tk.Label(ventana, text="Método de pago:").pack(pady=10)
+
+# Creamos la caja desplegable
+caja_opciones = ttk.Combobox(ventana, values=["Efectivo", "Tarjeta de Crédito", "PayPal"])
+caja_opciones.pack()
+
+# Para que el usuario no escriba cosas inventadas y solo elija de la lista
+caja_opciones.state(["readonly"])
+
+ventana.mainloop()
+```
+
+
+### 4. El `Listbox`: La lista a la vista 📋
+
+Es parecido al Combobox, pero la lista siempre está visible en la pantalla como un pequeño recuadro. El usuario puede hacer clic en un elemento para sombrearlo y seleccionarlo.
+
+- **Analogía:** Una lista del supermercado donde subrayas lo que necesitas.
+
+*Ejemplo de uso:*
+
+```python
+import tkinter as tk
+
+ventana = tk.Tk()
+
+tk.Label(ventana, text="Frutas disponibles:").pack()
+
+# Creamos la lista visual
+lista = tk.Listbox(ventana)
+lista.pack(pady=10)
+
+# Le agregamos elementos usando .insert()
+# El END significa "ponlo al final de lo que ya haya"
+lista.insert(tk.END, "Manzana")
+lista.insert(tk.END, "Banana")
+lista.insert(tk.END, "Fresa")
+lista.insert(tk.END, "Naranja")
+
+ventana.mainloop()
+```
+
+
+### 5. El `Scale`: El deslizador numérico 🎚️
+A veces no queremos que el usuario elija de una lista, sino que escoja un número dentro de un rango deslizando un control.
+- Analogía: El control de volumen del estéreo o el brillo de tu pantalla.
+- El secreto: Le decimos desde dónde empieza (from_) y dónde termina (to). (Nota que 'from' lleva un guión bajo al final en Python).
+
+*Ejemplo de uso:*
+
+```py
+import tkinter as tk
+
+ventana = tk.Tk()
+ventana.geometry("300x150")
+
+tk.Label(ventana, text="Volumen:").pack()
+
+# Creamos el deslizador. Orient=HORIZONTAL lo acuesta (por defecto es vertical)
+deslizador = tk.Scale(ventana, from_=0, to=100, orient=tk.HORIZONTAL)
+deslizador.pack(pady=10)
+
+def checar_volumen():
+    # .get() nos devuelve el número en el que se quedó el deslizador
+    print("El volumen está en:", deslizador.get())
+
+tk.Button(ventana, text="Ver Volumen", command=checar_volumen).pack()
+
+ventana.mainloop()
+```
+
+
+*🏆 Resumen del Módulo*
+
+- Checkbutton (Casilla): Para opciones de Sí o No, donde puedes seleccionar varias a la vez. Usa BooleanVar().
+- Radiobutton (Circulito): Para opciones únicas y exclusivas. Todos deben compartir la misma variable.
+- Combobox (Desplegable): Para listas largas que no caben en la pantalla. (Recuerda importar ttk).
+- Listbox (Lista visible): Para listas de tamaño mediano que quieres que siempre estén a la vista.
+- Scale (Deslizador): Para elegir un número rápidamente arrastrando una barrita.
