@@ -4,12 +4,13 @@ Todo el interfaz vive en este archivo usando widgets nativos de tkinter.
 """
 
 import os
+import tkinter as tk
 from tkinter import ttk, messagebox
 
 from assets.estilos import (
     BG_MAIN, aplicar_estilos,
 )
-from logic.gestor_gastos import cargar_suscripciones, guardar_suscripciones
+from logic.gestor_gastos import cargar_suscripciones
 
 # Ruta al directorio de assets (relativa a este archivo)
 _ASSETS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
@@ -32,21 +33,54 @@ class GastosVampiroApp:
         self.suscripciones = cargar_suscripciones()
 
         # ── Construir UI ─────────────────────────────────────────────────
+        self._crear_menu()
         self._crear_header()
 
         from gui.formulario import Formulario
-        self.formulario = Formulario(self.root, self.suscripciones, self._refrescar_tabla)
+        from gui.tabla import Tabla
 
-        self._crear_resumen()
-        self._crear_tabla()
-        self._crear_footer()
+        self.formulario = Formulario(
+            self.root, self.suscripciones,
+            lambda: self.tabla.refrescar(),
+        )
+        self.tabla = Tabla(self.root, self.suscripciones)
 
         # Cargar datos iniciales
-        self._refrescar_tabla()
+        self.tabla.refrescar()
 
     # ══════════════════════════════════════════════════════════════════════
     # SECCIONES DE LA INTERFAZ
     # ══════════════════════════════════════════════════════════════════════
+
+    def _crear_menu(self):
+        """Crea la barra de menú principal de la aplicación."""
+        barra_menu = tk.Menu(self.root)
+        self.root.config(menu=barra_menu)
+
+        # ── Menú Archivo ─────────────────────────────────────────────────
+        menu_archivo = tk.Menu(barra_menu, tearoff=0)
+        menu_archivo.add_command(
+            label="📄 Exportar PDF",
+            command=self._exportar_pdf,
+            accelerator="Ctrl+E",
+        )
+        menu_archivo.add_separator()
+        menu_archivo.add_command(
+            label="🚪 Salir",
+            command=self._salir,
+            accelerator="Ctrl+Q",
+        )
+        barra_menu.add_cascade(label="Archivo", menu=menu_archivo)
+
+        # ── Acerca de (directo en la barra) ──────────────────────────────
+        barra_menu.add_command(
+            label="Acerca de",
+            command=self._mostrar_acerca_de,
+        )
+
+        # ── Atajos de teclado ────────────────────────────────────────────
+        self.root.bind("<Control-e>", lambda e: self._exportar_pdf())
+        self.root.bind("<Control-q>", lambda e: self._salir())
 
     def _crear_header(self):
         # Frame con fondo ACCENT púrpura
@@ -75,138 +109,26 @@ class GastosVampiroApp:
             style="HeaderSubTitle.TLabel"
         ).pack(pady=(2, 0))
 
-    def _crear_resumen(self):
-        frame = ttk.Frame(self.root, 
-                          style="Main.TFrame"
-                          )
-        frame.pack(fill="x", padx=16, pady=(10, 0))
+    # ══════════════════════════════════════════════════════════════════════
+    # ACCIONES DEL MENÚ
+    # ══════════════════════════════════════════════════════════════════════
 
-        ttk.Label(
-            frame,
-            text="📋 Tus Suscripciones",
-            style="MainBold.TLabel",
-        ).pack(side="left")
-
-        self.lbl_total = ttk.Label(
-            frame,
-            text="Total mensual: S/. 0.00",
-            style="TotalLabel.TLabel",
-        )
-        self.lbl_total.pack(side="right")
-
-    def _crear_tabla(self):
-        frame = ttk.Frame(self.root, 
-                          style="Main.TFrame"
-                          )
-        frame.pack(fill="both", expand=True, padx=16, pady=(8, 5))
-
-        columnas = ("num", "nombre", "costo", "fecha")
-        self.tree = ttk.Treeview(frame, columns=columnas, show="headings", selectmode="browse", height=5)
-
-        self.tree.heading("num", text="#")
-        self.tree.heading("nombre", text="Suscripción")
-        self.tree.heading("costo", text="Costo Mensual")
-        self.tree.heading("fecha", text="Fecha Agregada")
-
-        self.tree.column("num", width=40, anchor="center", minwidth=30)
-        self.tree.column("nombre", width=200, anchor="w", minwidth=100)
-        self.tree.column("costo", width=120, anchor="center", minwidth=80)
-        self.tree.column("fecha", width=120, anchor="center", minwidth=80)
-
-        scrollbar = ttk.Scrollbar(frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=scrollbar.set)
-
-        self.tree.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Label para cuando no hay datos
-        self.lbl_vacio = ttk.Label(
-            frame,
-            text="No hay suscripciones registradas\nAgrega una para comenzar",
-            style="Main.TLabel",
-            justify="center",
-        )
-
-    def _crear_footer(self):
-        frame = ttk.Frame(self.root, style="Main.TFrame")
-        frame.pack(fill="x", padx=16, pady=(0, 12))
-
-        ttk.Button(
-            frame,
-            text="🗑  Eliminar Seleccionada",
-            style="Danger.TButton",
-            command=self._eliminar_suscripcion,
-            cursor="hand2",
-        ).pack(side="left")
-
-        self.lbl_anual = ttk.Label(frame, text="", 
-                                   style="Anual.TLabel"
-                                   )
-        self.lbl_anual.pack(side="left", expand=True)
-
+    def _exportar_pdf(self):
+        """Exporta las suscripciones a un archivo PDF."""
         from logic.exportar_pdf import exportar_pdf
+        exportar_pdf(self.suscripciones)
 
-        ttk.Button(
-            frame,
-            text="📄  Exportar PDF",
-            style="Secondary.TButton",
-            command=lambda: exportar_pdf(self.suscripciones),
-            cursor="hand2",
-        ).pack(side="right")
+    def _salir(self):
+        """Cierra la aplicación con confirmación."""
+        if messagebox.askokcancel("Salir", "¿Estás seguro de que deseas salir?"):
+            self.root.destroy()
 
-    # ══════════════════════════════════════════════════════════════════════
-    # LÓGICA DE NEGOCIO
-    # ══════════════════════════════════════════════════════════════════════
-    def _eliminar_suscripcion(self):
-        seleccion = self.tree.selection()
-        if not seleccion:
-            messagebox.showinfo("Sin Selección", "Selecciona una suscripción de la tabla para eliminarla.")
-            return
-
-        valores = self.tree.item(seleccion[0])["values"]
-        nombre = valores[1]
-
-        confirmar = messagebox.askyesno(
-            "Confirmar Eliminación",
-            f'¿Eliminar la suscripción "{nombre}"?',
+    def _mostrar_acerca_de(self):
+        """Muestra información sobre la aplicación."""
+        messagebox.showinfo(
+            "Acerca de Gastos Vampiro",
+            "🧛 Gastos Vampiro v1.0\n\n"
+            "Rastreador de suscripciones que\n"
+            "chupan tu dinero 💸\n\n"
+            "Desarrollado con Python y Tkinter",
         )
-
-        if confirmar:
-            idx = int(valores[0]) - 1
-            if 0 <= idx < len(self.suscripciones):
-                self.suscripciones.pop(idx)
-                try:
-                    guardar_suscripciones(self.suscripciones)
-                except IOError as e:
-                    messagebox.showerror("Error", f"No se pudo guardar:\n{e}")
-                self._refrescar_tabla()
-
-    def _refrescar_tabla(self):
-        # Limpiar tabla
-        for item in self.tree.get_children():
-            self.tree.delete(item)
-
-        total = 0.0
-        if self.suscripciones:
-            self.lbl_vacio.place_forget()
-            for i, sub in enumerate(self.suscripciones):
-                costo = sub.get("costo", 0)
-                total += costo
-                self.tree.insert(
-                    "", "end",
-                    values=(i + 1, 
-                    sub.get("nombre", ""), 
-                    f"S/. {costo:,.2f}", 
-                    sub.get("fecha", "")),
-                )
-        else:
-            self.lbl_vacio.place(relx=0.5, rely=0.5, anchor="center")
-
-        self.lbl_total.configure(text=f"Total mensual: S/. {total:,.2f}")
-
-        if total > 0:
-            self.lbl_anual.configure(text=f"Gasto anual estimado: S/. {total * 12:,.2f}")
-        else:
-            self.lbl_anual.configure(text="")
-
-        self.root.title(f"Gastos Vampiro — S/. {total:,.2f}/mes")
