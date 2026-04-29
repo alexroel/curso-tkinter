@@ -3,7 +3,13 @@ Tkinter es la biblioteca de interfaces gráficas de usuario (GUI) estándar para
 
 1. [Instalación](#instalación)
 2. [Tu Primera Ventana en Python](#tu-primera-ventana-en-python)
-
+3. [Elementos de la GUI (Widgets)](#elementos-de-la-gui-widgets)
+4. [Variables de Control](#variables-de-control)
+5. [Escuchando al Usuario (Eventos)](#escuchando-al-usuario-eventos)
+6. [Organizando el Caos (Frames y Ventanas)](#organizando-el-caos-frames-y-ventanas)
+7. [Toques Finales, Alertas y Estética](#toques-finales-alertas-y-estética)
+8. [Organizando tu Ventana (Layouts)](#organizando-tu-ventana-layouts)
+9. [Dando Opciones al Usuario (Selección y Estado)](#dando-opciones-al-usuario-selección-y-estado)
 
 ---
 ## Instalación
