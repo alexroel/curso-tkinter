@@ -17,12 +17,6 @@ Nuestra aplicación principal donde aplicamos todo lo aprendido. Un gestor de su
 
 - [📂 Código Fuente del Proyecto](/gastos-vampiro)
 
-## 📦 Descargas (Producción)
-
-¿Quieres probar la aplicación sin configurar el entorno de desarrollo? Descarga la versión lista para usar:
-
-- [📥 Descargar Gastos Vampiro (.zip)](blob:https://github.com/5b7805e9-45bc-4a4b-8954-7dbc3fb58b19)
-
 ## 📺 Curso en YouTube
 
 Sigue las lecciones paso a paso en video:
